@@ -24,9 +24,19 @@ const userSchema = mongoose.Schema({
     timestamps: true
 });
 
+userSchema.methods.toJSON = function () {
+    var obj = this.toObject();
+    delete obj.password;
+    delete obj.createdAt;
+    delete obj.__v;
+    delete obj.updatedAt;
+
+    return obj;
+};
+
 userSchema.methods.matchPassword = async function(enteredPassword) {
     return await bcrypt.compare(enteredPassword, this.password);
-}
+};
 
 const User = mongoose.model('User', userSchema);
 
