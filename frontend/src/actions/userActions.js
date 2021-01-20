@@ -9,11 +9,11 @@ export const login = (email, password) => async (dispatch) => {
 
         const config = {
             headers: {
-                'Contetnt-Type': 'application/json'
+                'Content-Type': 'application/json'
             }
         }
 
-        const { data } = await axios.post('api/users/login', { email, password}, config);
+        const { data } = await axios.post('/api/users/login', { email, password }, config);
 
         dispatch({
             type: USER_LOGIN_SUCCESS,
@@ -25,8 +25,9 @@ export const login = (email, password) => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: USER_LOGIN_FAIL,
-            payload: error.response && error.response.data.messsage 
-                ? error.response.data.messsage
+            payload:
+                error.response && error.response.data.message
+                ? error.response.data.message
                 : error.message
         });
     }
