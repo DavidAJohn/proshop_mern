@@ -1,27 +1,48 @@
-import React, { useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
+import { createOrder } from '../actions/orderActions';
 
-const PlaceOrderScreen = () => {
+const PlaceOrderScreen = ({ history }) => {
+    const dispatch = useDispatch();
+
     const cart = useSelector(state => state.cart);
 
-    // calculate prices in summary
     const formatter = new Intl.NumberFormat('en-UK', {
         style: 'currency',
         currency: 'GBP',
         minimumFractionDigits: 2
     });
 
+    // calculate prices in summary
     cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
     cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 5.99; // free for orders over £100
-    cart.taxPrice = (cart.itemsPrice + cart.shippingPrice) * 0.2; // VAT at 20%
-    cart.totalPrice = formatter.format(cart.itemsPrice + cart.shippingPrice + cart.taxPrice);
+    cart.taxPrice = (cart.itemsPrice + cart.shippingPrice) * 0.2; // VAT at 20% (on items + shipping)
+    cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+
+    const orderCreate = useSelector((state) => state.orderCreate);
+    const { order, success, error } = orderCreate;
+
+    useEffect(() => {
+        if (success) {
+          history.push(`/order/${order._id}`);
+        }
+        // eslint-disable-next-line
+      }, [history, success])
 
     const placeOrderHandler = () => {
-
+        dispatch(createOrder({
+            orderItems: cart.cartItems,
+            shippingAddress: cart.shippingAddress,
+            paymentMethod: cart.paymentMethod,
+            itemsPrice: cart.itemsPrice,
+            shippingPrice: cart.shippingPrice,
+            taxPrice: cart.taxPrice,
+            totalPrice: cart.totalPrice
+        }));
     };
 
     return (
@@ -101,8 +122,11 @@ const PlaceOrderScreen = () => {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Total</Col>
-                                    <Col>{cart.totalPrice}</Col>
+                                    <Col>{formatter.format(cart.totalPrice)}</Col>
                                 </Row>
+                            </ListGroup.Item>
+                            <ListGroup.Item>
+                                {error && <Message variant='danger'>{error}</Message>}
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Button type='button' 
