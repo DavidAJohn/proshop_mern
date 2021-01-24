@@ -11,17 +11,26 @@ const PlaceOrderScreen = ({ history }) => {
 
     const cart = useSelector(state => state.cart);
 
-    const formatter = new Intl.NumberFormat('en-UK', {
+    const toTwoDecimals = (num) => {
+        return (Math.round(num * 100) / 100).toFixed(2);
+    }
+
+    const currencyFormatter = new Intl.NumberFormat('en-UK', {
         style: 'currency',
         currency: 'GBP',
         minimumFractionDigits: 2
     });
 
-    // calculate prices in summary
-    cart.itemsPrice = cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0);
-    cart.shippingPrice = cart.itemsPrice > 100 ? 0 : 5.99; // free for orders over £100
-    cart.taxPrice = (cart.itemsPrice + cart.shippingPrice) * 0.2; // VAT at 20% (on items + shipping)
-    cart.totalPrice = cart.itemsPrice + cart.shippingPrice + cart.taxPrice;
+    // arbitrary shipping cost, free shipping level & VAT
+    const shippingCost = 5.99;
+    const freeShippingOver = 100;
+    const vatLevel = 0.2; // VAT at 20% (on items + shipping total)
+
+    // calculate prices in order summary
+    cart.itemsPrice = toTwoDecimals(cart.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0));
+    cart.shippingPrice = cart.itemsPrice > freeShippingOver ? 0 : shippingCost; // free for orders > freeShippingOver
+    cart.taxPrice = toTwoDecimals((Number(cart.itemsPrice) + Number(cart.shippingPrice)) * vatLevel); 
+    cart.totalPrice = (Number(cart.itemsPrice) + Number(cart.shippingPrice) + Number(cart.taxPrice)).toFixed(2);
 
     const orderCreate = useSelector((state) => state.orderCreate);
     const { order, success, error } = orderCreate;
@@ -104,25 +113,25 @@ const PlaceOrderScreen = ({ history }) => {
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Items</Col>
-                                    <Col>{formatter.format(cart.itemsPrice)}</Col>
+                                    <Col>{currencyFormatter.format(cart.itemsPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Shipping</Col>
-                                    <Col>{formatter.format(cart.shippingPrice)}</Col>
+                                    <Col>{currencyFormatter.format(cart.shippingPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Row>
                                     <Col>VAT</Col>
-                                    <Col>{formatter.format(cart.taxPrice)}</Col>
+                                    <Col>{currencyFormatter.format(cart.taxPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
                                 <Row>
                                     <Col>Total</Col>
-                                    <Col>{formatter.format(cart.totalPrice)}</Col>
+                                    <Col>{currencyFormatter.format(cart.totalPrice)}</Col>
                                 </Row>
                             </ListGroup.Item>
                             <ListGroup.Item>
