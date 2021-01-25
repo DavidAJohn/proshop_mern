@@ -27,9 +27,10 @@ export const orderCreateReducer = (state = {}, action) => {
         default:
             return state;
     }
-};
+}
 
-export const orderDetailsReducer = (state = { orderItems: [], shippingAddress: {} }, action) => {
+export const orderDetailsReducer = (
+    state = { loading: true, orderItems: [], shippingAddress: {} }, action) => {
     switch(action.type) {
         case ORDER_DETAILS_REQUEST:
             return {
@@ -49,4 +50,4 @@ export const orderDetailsReducer = (state = { orderItems: [], shippingAddress: {
         default:
             return state;
     }
-};
+}
