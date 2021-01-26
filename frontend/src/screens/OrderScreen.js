@@ -60,12 +60,12 @@ const OrderScreen = ({ match }) => {
         : error ? (<Message variant='danger'>{error}</Message>) 
         : (
         <>
-            <h1>Thank you!</h1>
-            <h2>Order: {order._id}</h2>
+            <h1>Order Details</h1>
             <Row>
                 <Col md={8}>
                     <ListGroup variant='flush'>
                         <ListGroup.Item>
+                            <h2>Order ID: {order._id}</h2>
                             <h2>Shipping</h2>
                             <p>
                                 <span className='font-weight-bold'>Name:</span> {order.user.name}
