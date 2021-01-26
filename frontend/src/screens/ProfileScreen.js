@@ -119,6 +119,7 @@ const ProfileScreen = ({ location, history }) => {
             {loadingOrders ? <Loader /> 
             : errorOrders 
             ? <Message variant='danger'>{errorOrders}</Message> 
+            : orders.length === 0 ? <Message variant='light'>No previous orders</Message>
             : (
               <Table striped bordered hover responsive className='table-sm'>
                 <thead>
@@ -132,8 +133,7 @@ const ProfileScreen = ({ location, history }) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {orders.length === 0 ? <Message variant='light'>No previous orders</Message>
-                    : orders.map(order => (
+                  {orders.map(order => (
                     <tr key={order._id}>
                       <td>{order._id}</td>
                       <td>{order.createdAt.substring(0, 10)}</td>
