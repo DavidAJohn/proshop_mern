@@ -5,6 +5,7 @@ import { Button, Row, Col, ListGroup, Image, Card } from 'react-bootstrap';
 import Message from '../components/Message';
 import CheckoutSteps from '../components/CheckoutSteps';
 import { createOrder } from '../actions/orderActions';
+import { emptyCartItems } from '../actions/cartActions';
 
 const PlaceOrderScreen = ({ history }) => {
     const dispatch = useDispatch();
@@ -37,7 +38,8 @@ const PlaceOrderScreen = ({ history }) => {
 
     useEffect(() => {
         if (success) {
-          history.push(`/order/${order._id}`);
+            dispatch(emptyCartItems());
+            history.push(`/order/${order._id}`);
         }
         // eslint-disable-next-line
       }, [history, success])
