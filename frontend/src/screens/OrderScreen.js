@@ -52,6 +52,10 @@ const OrderScreen = ({ match }) => {
         minimumFractionDigits: 2
     });
 
+    function formatDate(date) {
+        return new Date(date).toLocaleDateString();
+    }
+
     const successPaymentHandler = (paymentResult) => {
         dispatch(payOrder(orderId, paymentResult));
     };
@@ -80,7 +84,7 @@ const OrderScreen = ({ match }) => {
                                 {order.shippingAddress.postalCode},{' '}
                                 {order.shippingAddress.country}
                             </p>
-                            {order.isDelivered ? <Message variant='success'>Dispatched on {order.deliveredAt}</Message>
+                            {order.isDelivered ? <Message variant='success'>Dispatched on {formatDate(order.deliveredAt)}</Message>
                             : <Message variant='danger'>Not Yet Dispatched</Message>}
                         </ListGroup.Item>
                         <ListGroup.Item>
@@ -89,7 +93,7 @@ const OrderScreen = ({ match }) => {
                                 <span className='font-weight-bold'>Method:</span>
                                 {order.paymentMethod}
                             </p>
-                            {order.isPaid ? <Message variant='success'>Paid on {order.paidAt}</Message>
+                            {order.isPaid ? <Message variant='success'>Paid on {formatDate(order.paidAt)}</Message>
                             : <Message variant='danger'>Not Paid</Message>}
                         </ListGroup.Item>
                         <ListGroup.Item>
