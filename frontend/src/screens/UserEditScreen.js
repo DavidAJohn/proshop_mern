@@ -4,8 +4,9 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Button, Form } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { getUserDetails } from '../actions/userActions';
 import FormContainer from '../components/FormContainer';
+import { getUserDetails, editUser } from '../actions/userActions';
+import { USER_EDIT_RESET } from '../constants/userConstants';
 
 const UserEditScreen = ({ match, history }) => {
     const userId = match.params.id;
@@ -17,20 +18,30 @@ const UserEditScreen = ({ match, history }) => {
     const dispatch = useDispatch();
 
     const userDetails = useSelector((state) => state.userDetails);
-    const { loading, error, user } = userDetails;
+    const { user } = userDetails;
+
+    const userEdit = useSelector((state) => state.userEdit);
+    const { loading: loadingEdit, error: errorEdit, success: successEdit } = userEdit;
 
     useEffect(() => {
-        if (!user.name || user._id !== userId) {
-            dispatch(getUserDetails(userId))
+        if (successEdit) {
+            dispatch({ type: USER_EDIT_RESET});
+            history.push('/admin/userlist');
         } else {
-            setName(user.name);
-            setEmail(user.email);
-            setIsAdmin(user.isAdmin);
+            if (!user.name || user._id !== userId) {
+                dispatch(getUserDetails(userId))
+            } else {
+                setName(user.name);
+                setEmail(user.email);
+                setIsAdmin(user.isAdmin);
+            }
         }
-    }, [user, dispatch, userId]);
+    }, [user, dispatch, userId, successEdit, history]);
 
     const submitHandler = (e) => {
         e.preventDefault();
+
+        dispatch(editUser({ _id: userId, name, email, isAdmin }));
     };
 
     return (
@@ -40,8 +51,8 @@ const UserEditScreen = ({ match, history }) => {
             </Link>
             <FormContainer>
                 <h1>Edit User</h1>
-                {error && <Message variant='danger'>{error}</Message>}
-                {loading && <Loader />}
+                {errorEdit && <Message variant='danger'>{errorEdit}</Message>}
+                {loadingEdit && <Loader />}
                 <Form onSubmit={submitHandler}>
                 <Form.Group controlId='name'>
                         <Form.Label>Name</Form.Label>
