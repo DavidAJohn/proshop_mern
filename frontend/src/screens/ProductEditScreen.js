@@ -5,7 +5,8 @@ import { Button, Form } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import FormContainer from '../components/FormContainer';
-import { listProductDetails } from '../actions/productActions';
+import { listProductDetails, updateProduct } from '../actions/productActions';
+import { PRODUCT_UPDATE_RESET, PRODUCT_DETAILS_RESET } from '../constants/productConstants';
 
 const ProductEditScreen = ({ match, history }) => {
     const productId = match.params.id;
@@ -23,7 +24,15 @@ const ProductEditScreen = ({ match, history }) => {
     const productDetails = useSelector((state) => state.productDetails);
     const { loading, error, product } = productDetails;
 
+    const productUpdate = useSelector((state) => state.productUpdate);
+    const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = productUpdate;
+
     useEffect(() => {
+        if (successUpdate) {
+            dispatch({ type: PRODUCT_UPDATE_RESET });
+            dispatch({ type: PRODUCT_DETAILS_RESET })
+            history.push('/admin/productlist');
+        } else {
             if (!product.name || product._id !== productId) {
                 dispatch(listProductDetails(productId))
             } else {
@@ -35,12 +44,27 @@ const ProductEditScreen = ({ match, history }) => {
                 setCountInStock(product.countInStock);
                 setDescription(product.description);
             }
-    }, [product, dispatch, productId, history]);
+        }
+    }, [product, dispatch, productId, history, successUpdate]);
 
     const submitHandler = (e) => {
         e.preventDefault();
 
-        // update product
+        dispatch(updateProduct({
+            _id: productId,
+            name,
+            price,
+            description,
+            image,
+            brand,
+            category,
+            countInStock
+        }))
+    };
+
+    const cancelHandler = () => {
+        dispatch({ type: PRODUCT_DETAILS_RESET })
+        history.push('/admin/productlist');
     };
 
     return (
@@ -50,6 +74,8 @@ const ProductEditScreen = ({ match, history }) => {
             </Link>
             <FormContainer>
                 <h1>Edit Product</h1>
+                {errorUpdate && <Message variant='danger'>{errorUpdate}</Message>}
+                {loadingUpdate && <Loader />}
                 {error && <Message variant='danger'>{error}</Message>}
                 {loading && <Loader />}
                 <Form onSubmit={submitHandler}>
@@ -123,7 +149,8 @@ const ProductEditScreen = ({ match, history }) => {
                         >
                         </Form.Control>
                     </Form.Group>
-                    <Button type='submit' variant='primary'>Update</Button>
+                    <Button type='submit' variant='primary'>Update</Button>&nbsp;
+                    <Button type='button' variant='primary' onClick={cancelHandler}>Cancel</Button>
                 </Form>
             </FormContainer>
         </>
