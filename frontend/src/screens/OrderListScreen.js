@@ -23,6 +23,16 @@ const OrderListScreen = ({ history }) => {
         }
     }, [dispatch, history, userInfo]);
     
+    const currencyFormatter = new Intl.NumberFormat('en-UK', {
+        style: 'currency',
+        currency: 'GBP',
+        minimumFractionDigits: 2
+    });
+
+    function formatDate(date) {
+        return new Date(date).toLocaleDateString();
+    }
+
     return (
         <>
             <h1>Orders</h1>
@@ -45,17 +55,17 @@ const OrderListScreen = ({ history }) => {
                         <tr key={order._id}>
                             <td>{order._id}</td>
                             <td>{order.user && order.user.name}</td>
-                            <td>{order.createdAt.substring(0, 10)}</td>
-                            <td>{order.totalPrice}</td>
+                            <td>{formatDate(order.createdAt)}</td>
+                            <td>{currencyFormatter.format(order.totalPrice)}</td>
                             <td>
                                 {order.isPaid 
-                                ? (order.paidAt.substring(0,10)) 
+                                ? (formatDate(order.paidAt)) 
                                 : (<i className='fas fa-times' style={{color: 'red'}}></i>)
                                 }
                             </td>
                             <td>
                                 {order.isDelivered 
-                                ? (order.deliveredAt.substring(0,10)) 
+                                ? (formatDate(order.deliveredAt)) 
                                 : (<i className='fas fa-times' style={{color: 'red'}}></i>)
                                 }
                             </td>
