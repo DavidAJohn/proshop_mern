@@ -16,6 +16,10 @@ import {
     ORDER_ADMIN_LIST_REQUEST,
     ORDER_ADMIN_LIST_SUCCESS,
     ORDER_ADMIN_LIST_FAIL,
+    ORDER_SENT_REQUEST,
+    ORDER_SENT_SUCCESS,
+    ORDER_SENT_FAIL,
+    ORDER_SENT_RESET,
  } from '../constants/orderConstants';
 
 export const orderCreateReducer = (state = {}, action) => {
@@ -127,6 +131,29 @@ export const orderAdminListReducer = (state = { orders: [] }, action) => {
                 loading: false,
                 error: action.payload
             }
+        default:
+            return state;
+    }
+}
+
+export const orderSentReducer = (state = {}, action) => {
+    switch(action.type) {
+        case ORDER_SENT_REQUEST:
+            return {
+                loading: true
+            }
+        case ORDER_SENT_SUCCESS:
+            return {
+                loading: false,
+                success: true
+            }
+        case ORDER_SENT_FAIL:
+            return {
+                loading: false,
+                error: action.payload
+            }
+        case ORDER_SENT_RESET:
+            return {}
         default:
             return state;
     }
