@@ -20,7 +20,7 @@ const Product = ({ product }) => {
                     starSpacing=".05rem"
                     starRatedColor="rgb(255, 180, 3)"
                 />
-                <div className='my-1'>({product.numReviews} {product.numReviews > 1 ? 'reviews' : 'review'})</div>
+                <div className='my-1'>({product.numReviews} {product.numReviews === 1 ? 'review' : 'reviews'})</div>
                 </Card.Text>
                 <Card.Text as='h3' className='mt-3'>
                     £{product.price}
