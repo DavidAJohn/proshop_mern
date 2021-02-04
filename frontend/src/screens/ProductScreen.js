@@ -54,7 +54,7 @@ const ProductScreen = ({ history, match }) => {
 
     return <>
             <Helmet>
-                <title>Welcome to ProShop | {product.name}</title>
+                <title>{ product.name ? `Welcome to ProShop | ${product.name}` : `Welcome to ProShop` }</title>
                 <meta name="keywords" content="tech, electronics, phone, console, camera" />
             </Helmet>
             <Link className='btn btn-light my-3' to='/'>
