@@ -46,3 +46,14 @@ h2 {
     font-size: 2.5vw;
   }
 }
+
+/* pagination */
+
+.pagination-container {
+    display: flex;
+    justify-content: flex-start;
+}
+
+.pagination-showing {
+    padding: .5rem 1.25rem
+}

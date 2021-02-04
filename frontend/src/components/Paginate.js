@@ -9,8 +9,8 @@ const Paginate = ({ pages, page, count, pageSize, keyword = '' }) => {
     const baseURL = path.split('/page/')[0] === '/' ? '' : path.split('/page/')[0];
 
     return pages > 1 && (
-        <div style={{display: "flex", justifyContent: "flex-start"}} >
-            <span>
+        <div className='pagination-container'>
+            <div>
                 <Pagination>
                     {[...Array(pages).keys()]
                         .map(x => (
@@ -20,12 +20,12 @@ const Paginate = ({ pages, page, count, pageSize, keyword = '' }) => {
                         ))
                     }
                 </Pagination>
-            </span>
-            <span style={{padding: ".5rem 1.25rem"}}>
+            </div>
+            <div className='pagination-showing'>
                 Showing <span className='font-weight-bold'>{page > 1 ? (page * pageSize) - (pageSize - 1) : page}
                 {' '}- {(pageSize * page) <= count ? (pageSize * page) : count} </span>
                 of <span className='font-weight-bold'>{count}</span>
-            </span>
+            </div>
         </div>
     )
 }
