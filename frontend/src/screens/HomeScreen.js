@@ -4,6 +4,7 @@ import { Row, Col } from 'react-bootstrap';
 import Product from '../components/Product';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
+import { Link } from 'react-router-dom';
 import { listProducts } from '../actions/productActions';
 import Paginate from '../components/Paginate';
 import ProductCarousel from '../components/ProductCarousel';
@@ -30,6 +31,14 @@ const HomeScreen = ({ match }) => {
         </Helmet>
         {!keyword && <ProductCarousel /> }
             <h1>Latest Products</h1>
+                {keyword && (
+                <>
+                <h4>You searched for : "{keyword}"</h4>
+                <Link className='btn btn-light my-3' to='/'>
+                    Go Back
+                </Link>
+                </>
+                )}
                 {loading  ? 
                 <Loader /> 
                 : error 
