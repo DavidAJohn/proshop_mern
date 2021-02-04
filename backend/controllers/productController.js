@@ -5,7 +5,7 @@ import Product from '../models/productModel.js';
 // @route   GET 'api/products'
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-    const pageSize = 10;
+    const pageSize = 3;
     const page = Number(req.query.pageNumber) || 1;
     
     const keywordName = req.query.keyword ? {
@@ -39,7 +39,9 @@ const getProducts = asyncHandler(async (req, res) => {
     res.json({
         products,
         page,
-        pages: Math.ceil(count / pageSize)
+        pages: Math.ceil(count / pageSize),
+        count,
+        pageSize
     });
 });
 

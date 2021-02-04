@@ -14,7 +14,7 @@ const ProductListScreen = ({ history, match }) => {
     const pageNumber = match.params.pageNumber || 1;
 
     const productList = useSelector(state => state.productList);
-    const { loading, error, products, page, pages } = productList;
+    const { loading, error, products, page, pages, count, pageSize } = productList;
 
     const productDelete = useSelector(state => state.productDelete);
     const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete;
@@ -101,7 +101,7 @@ const ProductListScreen = ({ history, match }) => {
                     ))}
                 </tbody>
             </Table>
-            <Paginate pages={pages} page={page} />
+            <Paginate pages={pages} page={page} count={count} pageSize={pageSize} />
             </> 
             }
         </>
