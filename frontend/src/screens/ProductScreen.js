@@ -7,6 +7,7 @@ import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { listProductDetails, createProductReview } from '../actions/productActions';
 import { PRODUCT_CREATE_REVIEW_RESET } from '../constants/productConstants';
+import {Helmet} from "react-helmet";
 
 const ProductScreen = ({ history, match }) => {
     const [qty, setQty] = useState(1);
@@ -52,6 +53,10 @@ const ProductScreen = ({ history, match }) => {
     }
 
     return <>
+            <Helmet>
+                <title>Welcome to ProShop | {product.name}</title>
+                <meta name="keywords" content="tech, electronics, phone, console, camera" />
+            </Helmet>
             <Link className='btn btn-light my-3' to='/'>
                 Go Back
             </Link>
