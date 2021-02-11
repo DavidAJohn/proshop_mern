@@ -2,6 +2,9 @@ import express from 'express';
 import path from 'path';
 import multer from 'multer';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
+import asyncHandler from 'express-async-handler';
+import pkg from 'cloudinary';
+const cloudinary = pkg;
 
 const router = express.Router();
 
@@ -33,8 +36,9 @@ const upload = multer({
     }
 });
 
-router.post('/', protect, isAdmin, upload.single('image'), (req, res) => {
-    res.send(`/${req.file.path.replace('\\', '/')}`);
-});
+router.post('/', protect, isAdmin, upload.single('image'), asyncHandler (async (req, res) => {
+    const image = await cloudinary.uploader.upload(`${req.file.path}`);
+    res.send(image.secure_url);
+}));
 
 export default router;

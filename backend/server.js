@@ -8,6 +8,8 @@ import productRoutes from './routes/productRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 import orderRoutes from './routes/orderRoutes.js';
 import uploadRoutes from './routes/uploadRoutes.js';
+import pkg from 'cloudinary';
+const cloudinary = pkg;
 
 dotenv.config();
 
@@ -23,6 +25,12 @@ app.use(express.json());
 
 app.get('/', (req, res) => {
     res.send('API is running...');
+});
+
+cloudinary.config({
+    cloud_name: process.env.CLOUD_NAME,
+    api_key: process.env.CLOUD_API_KEY,
+    api_secret: process.env.CLOUD_API_SECRET
 });
 
 app.use('/api/products', productRoutes);
