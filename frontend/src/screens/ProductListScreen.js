@@ -27,6 +27,7 @@ const ProductListScreen = ({ history, match }) => {
 
     const [modalIsOpen, setModalIsOpen] = useState(false);
     const [productId, setProductId] = useState();
+    const [productName, setProductName] = useState();
 
     useEffect(() => {
         dispatch({ type: PRODUCT_CREATE_RESET });
@@ -50,8 +51,9 @@ const ProductListScreen = ({ history, match }) => {
         setModalIsOpen(false);
     };
 
-    const deleteRequestHandler = (id) => {
+    const deleteRequestHandler = (id, name) => {
         setProductId(id);
+        setProductName(name);
         setModalIsOpen(true);
     };
 
@@ -69,7 +71,7 @@ const ProductListScreen = ({ history, match }) => {
                 <Modal.Header>
                     <Modal.Title>Are you sure?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Do you really want to delete this product?</Modal.Body>
+                <Modal.Body>Do you really want to delete '{productName}'?</Modal.Body>
                 <Modal.Footer>
                     <Button variant='danger' className='btn-sm' onClick={confirmDeleteHandler}>Yes, delete it</Button>
                     <Button variant='light' className='btn-sm' onClick={cancelConfirmModal}>No, cancel</Button>
@@ -118,7 +120,7 @@ const ProductListScreen = ({ history, match }) => {
                                         <i className='fas fa-edit'></i>
                                     </Button>
                                 </LinkContainer>
-                                <Button variant='danger' className='btn-sm' onClick={() => deleteRequestHandler(product._id)}>
+                                <Button variant='danger' className='btn-sm' onClick={() => deleteRequestHandler(product._id, product.name)}>
                                     <i className='fas fa-trash'></i>
                                 </Button>
                             </td>
