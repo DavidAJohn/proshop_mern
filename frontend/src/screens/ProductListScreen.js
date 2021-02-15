@@ -1,7 +1,7 @@
-import React, { useEffect} from 'react';
+import React, { useEffect, useState} from 'react';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Table, Button, Row, Col } from 'react-bootstrap';
+import { Table, Button, Row, Col, Modal } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
 import { listProducts, deleteProduct, createProduct } from '../actions/productActions';
@@ -25,6 +25,9 @@ const ProductListScreen = ({ history, match }) => {
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
 
+    const [modalIsOpen, setModalIsOpen] = useState(false);
+    const [productId, setProductId] = useState();
+
     useEffect(() => {
         dispatch({ type: PRODUCT_CREATE_RESET });
 
@@ -39,18 +42,40 @@ const ProductListScreen = ({ history, match }) => {
         }
     }, [dispatch, history, userInfo, successDelete, successCreate, createdProduct, pageNumber]);
     
-    const deleteHandler = (id) => {
-        if(window.confirm('Are you sure?')) {
-            dispatch(deleteProduct(id));
-        }
-    };
-
     const createProductHandler = () => {
         dispatch(createProduct());
+    };
+   
+    const cancelConfirmModal = () => {
+        setModalIsOpen(false);
+    };
+
+    const deleteRequestHandler = (id) => {
+        setProductId(id);
+        setModalIsOpen(true);
+    };
+
+    const confirmDeleteHandler = () => {
+        dispatch(deleteProduct(productId));
+        setModalIsOpen(false);
     };
 
     return (
         <>
+            <Modal
+                show={modalIsOpen}
+                onHide={cancelConfirmModal}
+            >
+                <Modal.Header>
+                    <Modal.Title>Are you sure?</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>Do you really want to delete this product?</Modal.Body>
+                <Modal.Footer>
+                    <Button variant='danger' className='btn-sm' onClick={confirmDeleteHandler}>Yes, delete it</Button>
+                    <Button variant='light' className='btn-sm' onClick={cancelConfirmModal}>No, cancel</Button>
+                </Modal.Footer>
+            </Modal>
+
             <Row className='align-item-center'>
                 <Col>
                     <h1>Products</h1>
@@ -93,7 +118,7 @@ const ProductListScreen = ({ history, match }) => {
                                         <i className='fas fa-edit'></i>
                                     </Button>
                                 </LinkContainer>
-                                <Button variant='danger' className='btn-sm' onClick={() => deleteHandler(product._id)}>
+                                <Button variant='danger' className='btn-sm' onClick={() => deleteRequestHandler(product._id)}>
                                     <i className='fas fa-trash'></i>
                                 </Button>
                             </td>
