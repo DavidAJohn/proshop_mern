@@ -5,8 +5,11 @@ import { protect, isAdmin } from '../middleware/authMiddleware.js';
 import asyncHandler from 'express-async-handler';
 import pkg from 'cloudinary';
 const cloudinary = pkg;
+import dotenv from 'dotenv';
 
 const router = express.Router();
+
+dotenv.config();
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -36,9 +39,27 @@ const upload = multer({
     }
 });
 
+const uploadMethod = () => {
+    if ('CLOUD_NAME' in process.env && 'CLOUD_API_KEY' in process.env && 'CLOUD_API_SECRET' in process.env) {
+        return 'cloudinary';
+    }
+    else {
+        return 'local';
+    }
+}
+
 router.post('/', protect, isAdmin, upload.single('image'), asyncHandler (async (req, res) => {
-    const image = await cloudinary.uploader.upload(`${req.file.path}`);
-    res.send(image.secure_url);
+    switch (uploadMethod()) {
+        case 'cloudinary':
+            const image = await cloudinary.uploader.upload(`${req.file.path}`);
+            res.send(image.secure_url);
+            break;
+        case 'local':
+            res.send(`/${req.file.path.replace('\\', '/')}`);
+            break;
+        default:
+            res.send(`/${req.file.path.replace('\\', '/')}`);
+    }
 }));
 
 export default router;
