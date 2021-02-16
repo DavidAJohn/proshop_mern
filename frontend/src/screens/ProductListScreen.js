@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Table, Button, Row, Col, Modal } from 'react-bootstrap';
 import Loader from '../components/Loader';
 import Message from '../components/Message';
-import { listProducts, deleteProduct, createProduct } from '../actions/productActions';
+import { listProducts, createProduct, deActivateProduct } from '../actions/productActions';
 import { PRODUCT_CREATE_RESET } from '../constants/productConstants';
 import Paginate from '../components/Paginate';
 
@@ -16,11 +16,11 @@ const ProductListScreen = ({ history, match }) => {
     const productList = useSelector(state => state.productList);
     const { loading, error, products, page, pages, count, pageSize } = productList;
 
-    const productDelete = useSelector(state => state.productDelete);
-    const { loading: loadingDelete, error: errorDelete, success: successDelete } = productDelete;
-
     const productCreate = useSelector(state => state.productCreate);
     const { loading: loadingCreate, error: errorCreate, success: successCreate, product: createdProduct } = productCreate;
+
+    const productDeActivate = useSelector(state => state.productDeActivate);
+    const { loading: loadingDeActivate, error: errorDeActivate, success: successDeActivate } = productDeActivate;
 
     const userLogin = useSelector(state => state.userLogin);
     const { userInfo } = userLogin;
@@ -41,7 +41,7 @@ const ProductListScreen = ({ history, match }) => {
         } else {
             dispatch(listProducts('', pageNumber));
         }
-    }, [dispatch, history, userInfo, successDelete, successCreate, createdProduct, pageNumber]);
+    }, [dispatch, history, userInfo, successDeActivate, successCreate, createdProduct, pageNumber]);
     
     const createProductHandler = () => {
         dispatch(createProduct());
@@ -51,29 +51,39 @@ const ProductListScreen = ({ history, match }) => {
         setModalIsOpen(false);
     };
 
-    const deleteRequestHandler = (id, name) => {
+    const deActivateRequestHandler = (id, name) => {
         setProductId(id);
         setProductName(name);
         setModalIsOpen(true);
     };
 
-    const confirmDeleteHandler = () => {
-        dispatch(deleteProduct(productId));
+    const confirmDeActivateHandler = () => {
+        dispatch(deActivateProduct(productId));
         setModalIsOpen(false);
+    };
+
+    const viewInactiveProductHandler = () => {
+        history.push('/admin/inactiveproductlist');
     };
 
     return (
         <>
             <Modal
+                size='lg'
                 show={modalIsOpen}
                 onHide={cancelConfirmModal}
             >
                 <Modal.Header>
                     <Modal.Title>Are you sure?</Modal.Title>
                 </Modal.Header>
-                <Modal.Body>Do you really want to delete '{productName}'?</Modal.Body>
+                <Modal.Body>
+                    <h5>Do you really want to de-activate '{productName}'?</h5>
+                    <p>It will no longer be visible to customers when purchasing.</p>
+                    <p>It will still be listed in previous customer orders.</p>
+                    <p>You can view inactive products and re-activate them from the 'View Inactive Products' button.</p>
+                </Modal.Body>
                 <Modal.Footer>
-                    <Button variant='danger' className='btn-sm' onClick={confirmDeleteHandler}>Yes, delete it</Button>
+                    <Button variant='danger' className='btn-sm' onClick={confirmDeActivateHandler}>Yes, de-activate it</Button>
                     <Button variant='light' className='btn-sm' onClick={cancelConfirmModal}>No, cancel</Button>
                 </Modal.Footer>
             </Modal>
@@ -86,10 +96,13 @@ const ProductListScreen = ({ history, match }) => {
                     <Button className='my-3' onClick={createProductHandler}>
                         <i className='fas fa-plus'></i> Create Product
                     </Button>
+                    <Button className='my-3 ml-3' onClick={viewInactiveProductHandler}>
+                        <i className='fas fa-plus'></i> View Inactive Products
+                    </Button>
                 </Col>
             </Row>
-            {loadingDelete && <Loader />}
-            {errorDelete && <Message variant='danger'>{errorDelete}</Message>}
+            {loadingDeActivate && <Loader />}
+            {errorDeActivate && <Message variant='danger'>{errorDeActivate}</Message>}
             {loadingCreate && <Loader />}
             {errorCreate && <Message variant='danger'>{errorCreate}</Message>}
             {loading ? <Loader /> : error ? <Message variant='danger'>{error}</Message>
@@ -120,7 +133,7 @@ const ProductListScreen = ({ history, match }) => {
                                         <i className='fas fa-edit'></i>
                                     </Button>
                                 </LinkContainer>
-                                <Button variant='danger' className='btn-sm' onClick={() => deleteRequestHandler(product._id, product.name)}>
+                                <Button variant='danger' className='btn-sm' onClick={() => deActivateRequestHandler(product._id, product.name)}>
                                     <i className='fas fa-trash'></i>
                                 </Button>
                             </td>

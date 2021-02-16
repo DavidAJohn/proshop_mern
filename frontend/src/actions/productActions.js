@@ -21,7 +21,16 @@ import {
     PRODUCT_CREATE_REVIEW_RESET,
     PRODUCT_TOP_REQUEST,
     PRODUCT_TOP_SUCCESS,
-    PRODUCT_TOP_FAIL
+    PRODUCT_TOP_FAIL,
+    PRODUCT_DEACTIVATE_REQUEST,
+    PRODUCT_DEACTIVATE_SUCCESS,
+    PRODUCT_DEACTIVATE_FAIL,
+    PRODUCT_ACTIVATE_REQUEST,
+    PRODUCT_ACTIVATE_SUCCESS,
+    PRODUCT_ACTIVATE_FAIL,
+    PRODUCT_LIST_INACTIVE_REQUEST,
+    PRODUCT_LIST_INACTIVE_SUCCESS,
+    PRODUCT_LIST_INACTIVE_FAIL
 } from '../constants/productConstants';
 
 export const listProducts = (keyword = '', pageNumber = '') => async (dispatch) => {
@@ -211,6 +220,99 @@ export const listTopRatedProducts = () => async (dispatch) => {
     } catch (error) {
         dispatch({
             type: PRODUCT_TOP_FAIL,
+            payload: error.response && error.response.data.messsage 
+                ? error.response.data.messsage
+                : error.message
+        });
+    };
+}
+
+export const deActivateProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_DEACTIVATE_REQUEST
+        });
+
+        const { userLogin: { userInfo } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        };
+
+        await axios.put(`/api/products/${id}/deactivate`, {}, config);
+
+        dispatch({
+            type: PRODUCT_DEACTIVATE_SUCCESS
+        });
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_DEACTIVATE_FAIL,
+            payload:
+                error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        });
+    }
+};
+
+export const activateProduct = (id) => async (dispatch, getState) => {
+    try {
+        dispatch({
+            type: PRODUCT_ACTIVATE_REQUEST
+        });
+
+        const { userLogin: { userInfo } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        };
+
+        await axios.put(`/api/products/${id}/activate`, {}, config);
+
+        dispatch({
+            type: PRODUCT_ACTIVATE_SUCCESS
+        });
+
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_ACTIVATE_FAIL,
+            payload:
+                error.response && error.response.data.message
+                ? error.response.data.message
+                : error.message
+        });
+    }
+};
+
+export const listInactiveProducts = () => async (dispatch, getState) => {
+    try {
+        dispatch({ type: PRODUCT_LIST_INACTIVE_REQUEST });
+
+        const { userLogin: { userInfo } } = getState();
+
+        const config = {
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: `Bearer ${userInfo.token}`
+            }
+        };
+
+        const { data } = await axios.get('/api/products/inactive', config);
+
+        dispatch({
+            type: PRODUCT_LIST_INACTIVE_SUCCESS,
+            payload: data
+        })
+    } catch (error) {
+        dispatch({
+            type: PRODUCT_LIST_INACTIVE_FAIL,
             payload: error.response && error.response.data.messsage 
                 ? error.response.data.messsage
                 : error.message

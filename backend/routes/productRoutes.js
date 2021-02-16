@@ -7,7 +7,10 @@ import {
     createProduct, 
     updateProduct, 
     createProductReview,
-    getTopRatedProducts
+    getTopRatedProducts,
+    deActivateProduct,
+    activateProduct,
+    getInactiveProducts
 } from '../controllers/productController.js';
 import { protect, isAdmin } from '../middleware/authMiddleware.js';
 
@@ -20,6 +23,15 @@ router.route('/:id/reviews')
 
 router.route('/top')
     .get(getTopRatedProducts)
+
+router.route('/inactive')
+    .get(protect, isAdmin, getInactiveProducts)
+
+router.route('/:id/deactivate')
+    .put(protect, isAdmin, deActivateProduct)
+
+router.route('/:id/activate')
+    .put(protect, isAdmin, activateProduct)
 
 router.route('/:id')
     .get(getProductById)

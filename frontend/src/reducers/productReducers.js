@@ -24,6 +24,15 @@ import {
     PRODUCT_TOP_REQUEST,
     PRODUCT_TOP_SUCCESS,
     PRODUCT_TOP_FAIL,
+    PRODUCT_DEACTIVATE_REQUEST,
+    PRODUCT_DEACTIVATE_SUCCESS,
+    PRODUCT_DEACTIVATE_FAIL,
+    PRODUCT_ACTIVATE_REQUEST,
+    PRODUCT_ACTIVATE_SUCCESS,
+    PRODUCT_ACTIVATE_FAIL,
+    PRODUCT_LIST_INACTIVE_REQUEST,
+    PRODUCT_LIST_INACTIVE_SUCCESS,
+    PRODUCT_LIST_INACTIVE_FAIL,
 } from '../constants/productConstants';
 
 export const productListReducer = (state = { products: [] }, action) => {
@@ -125,6 +134,51 @@ export const productTopRatedReducer = (state = { products: [] }, action) => {
         case PRODUCT_TOP_SUCCESS:
             return { loading: false, products: action.payload };
         case PRODUCT_TOP_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
+export const productDeActivateReducer = (state = { product: {} }, action) => {
+    switch(action.type) {
+        case PRODUCT_DEACTIVATE_REQUEST:
+            return { loading: true };
+        case PRODUCT_DEACTIVATE_SUCCESS:
+            return { loading: false, success: true, product: action.payload };
+        case PRODUCT_DEACTIVATE_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
+export const productActivateReducer = (state = { product: {} }, action) => {
+    switch(action.type) {
+        case PRODUCT_ACTIVATE_REQUEST:
+            return { loading: true };
+        case PRODUCT_ACTIVATE_SUCCESS:
+            return { loading: false, success: true, product: action.payload };
+        case PRODUCT_ACTIVATE_FAIL:
+            return { loading: false, error: action.payload };
+        default:
+            return state;
+    }
+}
+
+export const productListInactiveReducer = (state = { products: [] }, action) => {
+    switch(action.type) {
+        case PRODUCT_LIST_INACTIVE_REQUEST:
+            return { loading: true, products: [] };
+        case PRODUCT_LIST_INACTIVE_SUCCESS:
+            return { loading: false, 
+                products: action.payload.products, 
+                pages: action.payload.pages,
+                page: action.payload.page,
+                count: action.payload.count,
+                pageSize: action.payload.pageSize
+            };
+        case PRODUCT_LIST_INACTIVE_FAIL:
             return { loading: false, error: action.payload };
         default:
             return state;

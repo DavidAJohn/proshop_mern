@@ -23,16 +23,38 @@ const getProducts = asyncHandler(async (req, res) => {
     } : {}
 
     const count = await Product.countDocuments({
-        $or: [
-            {...keywordName}, 
-            {...keywordDescription}
-        ]});
+        $and: [
+            {
+                $or: [
+                    {...keywordName}, 
+                    {...keywordDescription}
+                ]
+            },
+            {
+                $or: [
+                    {isActive: null}, 
+                    {isActive: true}
+                ]
+            }
+          ]
+        });
     
     const products = await Product.find({
-        $or: [
-            {...keywordName}, 
-            {...keywordDescription}
-        ]})
+        $and: [
+            {
+                $or: [
+                    {...keywordName}, 
+                    {...keywordDescription}
+                ]
+            },
+            {
+                $or: [
+                    {isActive: null}, 
+                    {isActive: true}
+                ]
+            }
+          ]
+        })
         .limit(pageSize)
         .skip(pageSize * (page -1))
         
@@ -89,7 +111,8 @@ const createProduct = asyncHandler(async (req, res) => {
         category: 'Sample category',
         countInStock: 0,
         numReviews: 0,
-        description: 'Sample description'
+        description: 'Sample description',
+        isActive: false
     });
 
     const createdProduct = await product.save();
@@ -178,4 +201,91 @@ const getTopRatedProducts = asyncHandler(async (req, res) => {
     res.json(products);
 });
 
-export { getProducts, getProductById, deleteProduct, createProduct, updateProduct, createProductReview, getTopRatedProducts };
+// @desc    De-activate a product
+// @route   PUT 'api/products/{id}/deactivate'
+// @access  Private + Admin
+const deActivateProduct = asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+        product.name = product.name;
+        product.price = product.price;
+        product.description = product.description;
+        product.image = product.image;
+        product.brand = product.brand;
+        product.category = product.category;
+        product.countInStock = product.countInStock;
+        product.isActive = false;
+
+        const updatedProduct = await product.save();
+        res.json(updatedProduct);
+    }
+    else {
+        res.status(404);
+        throw new Error('Product not found');
+    }
+});
+
+// @desc    (Re-)Activate a product
+// @route   PUT 'api/products/{id}/activate'
+// @access  Private + Admin
+const activateProduct = asyncHandler(async (req, res) => {
+    const product = await Product.findById(req.params.id);
+
+    if (product) {
+        product.name = product.name;
+        product.price = product.price;
+        product.description = product.description;
+        product.image = product.image;
+        product.brand = product.brand;
+        product.category = product.category;
+        product.countInStock = product.countInStock;
+        product.isActive = true;
+
+        const updatedProduct = await product.save();
+        res.json(updatedProduct);
+    }
+    else {
+        res.status(404);
+        throw new Error('Product not found');
+    }
+});
+
+// @desc    Fetch inactive products
+// @route   GET 'api/products/inactive'
+// @access  Private + Admin
+const getInactiveProducts = asyncHandler(async (req, res) => {
+    const pageSize = 4;
+    const page = Number(req.query.pageNumber) || 1;
+
+    const count = await Product.countDocuments({
+        isActive: false
+    });
+    
+    const products = await Product.find({
+            isActive: false
+        })
+        .limit(pageSize)
+        .skip(pageSize * (page -1))
+        
+    res.json({
+        products,
+        page,
+        pages: Math.ceil(count / pageSize),
+        count,
+        pageSize
+    });
+});
+
+export { 
+    getProducts, 
+    getProductById, 
+    deleteProduct, 
+    createProduct, 
+    updateProduct, 
+    createProductReview, 
+    getTopRatedProducts,
+    deActivateProduct,
+    activateProduct,
+    getInactiveProducts
+};

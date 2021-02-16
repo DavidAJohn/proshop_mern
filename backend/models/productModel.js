@@ -59,6 +59,11 @@ const productSchema = mongoose.Schema({
         type: Number,
         required: true,
         default: 0
+    },
+    isActive: {
+        type: Boolean,
+        required: false,
+        default: false
     }
 }, {
     timestamps: true
