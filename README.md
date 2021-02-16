@@ -9,6 +9,8 @@ The core of this application was built while completing the [Udemy](https://www.
 
 As the course name indicates, it was built using a **M**ongoDB database, **E**xpress as the API, using the **R**eact framework and **N**odeJS.
 
+A live version of the application (with my additional features and fixes) can be seen running [here](https://proshop-daj.herokuapp.com/)
+
 ## Features
 
 - Full featured shopping cart
