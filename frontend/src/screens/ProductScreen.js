@@ -48,6 +48,13 @@ const ProductScreen = ({ history, match }) => {
         }));
     }
 
+    const quantityChangeHandler = (e) => {
+        let { value, min, max } = e.target;
+        value = Math.max(Number(min), Math.min(Number(max), Number(value)));
+
+        setQty(value);
+    }
+
     function formatDate(date) {
         return new Date(date).toLocaleDateString();
     }
@@ -117,18 +124,16 @@ const ProductScreen = ({ history, match }) => {
                             {product.countInStock > 0 && 
                                 <ListGroup.Item>
                                     <Row>
-                                        <Col>Qty</Col>
+                                        <Col>Qty (max of 5)</Col>
                                     </Row>
                                     <Row>
-                                        <Form.Control as='select' value={qty} onChange={(e) => setQty(e.target.value)}>
-                                            {
-                                                [...Array(product.countInStock).keys()]
-                                                    .map(x => (
-                                                    <option key={x + 1} value={x + 1}>
-                                                        {x + 1}
-                                                    </option>
-                                                ))
-                                            }
+                                        <Form.Control 
+                                            type='number' 
+                                            value={qty} 
+                                            onChange={(e) => quantityChangeHandler(e)}
+                                            min='1'
+                                            max={product.countInStock > 5 ? 5 : product.countInStock}
+                                            >
                                         </Form.Control>
                                     </Row>
                                 </ListGroup.Item>
