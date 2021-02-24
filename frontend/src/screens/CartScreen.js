@@ -7,7 +7,8 @@ import { addToCart, removeFromCart } from '../actions/cartActions';
 
 const CartScreen = ({ match, location, history }) => {
     const productId = match.params.id;
-    const qty = location.search ? Number(location.search.split('=')[1]) : 1;
+    const qtyFromUrl = location.search ? Number(location.search.split('=')[1]) : 1;
+    const qty = Math.min(qtyFromUrl, 5);
 
     const dispatch = useDispatch();
 
@@ -27,6 +28,13 @@ const CartScreen = ({ match, location, history }) => {
     const checkoutHandler = () => {
         history.push('/login?redirect=shipping');
     };
+
+    const quantityChangeHandler = (e, product) => {
+        let { value, min, max } = e.target;
+        value = Math.max(Number(min), Math.min(Number(max), Number(value)));
+
+        dispatch(addToCart(product, value));
+    }
 
     return (
         <Row>
@@ -49,18 +57,13 @@ const CartScreen = ({ match, location, history }) => {
                                     </Col>
                                     <Col md={2}>
                                         <Form.Control 
-                                            as='select' 
+                                            type='number' 
                                             value={item.qty} 
-                                            onChange={(e) => dispatch(addToCart(item.product, Number(e.target.value)))}>
-                                                {
-                                                    [...Array(item.countInStock).keys()]
-                                                        .map(x => (
-                                                        <option key={x + 1} value={x + 1}>
-                                                            {x + 1}
-                                                        </option>
-                                                    ))
-                                                }
-                                            </Form.Control>
+                                            onChange={(e) => quantityChangeHandler(e, item.product)}
+                                            min='1'
+                                            max={item.countInStock > 5 ? 5 : item.countInStock}
+                                        >  
+                                        </Form.Control>
                                     </Col>
                                     <Col md={2}>
                                         <Button type='button' variant='light' onClick={() => removeFromCartHandler(item.product)}>

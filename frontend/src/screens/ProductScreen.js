@@ -36,7 +36,8 @@ const ProductScreen = ({ history, match }) => {
     }, [dispatch, match, successCreateReview]);
 
     const addToCartHandler = () => {
-        history.push(`/cart/${match.params.id}?qty=${qty}`);
+        let quantity = Math.min(qty, 5);
+        history.push(`/cart/${match.params.id}?qty=${quantity}`);
     };
 
     const submitHandler = (e) => {
