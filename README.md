@@ -42,6 +42,10 @@ I have also made a number of improvements/fixes to the base application:
 
 ## Usage
 
+### MongoDb database
+
+You will (of course) need a MongoDb database. I would strongly recommend creating an Atlas database at mongodb.com, but you could also install MongoDb locally.
+
 ### ES Modules in Node
 
 ES Modules are used in the backend of this project. Be sure to have at least Node v14.6+ installed
