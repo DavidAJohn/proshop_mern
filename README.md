@@ -30,15 +30,15 @@ A live version of the application (with my additional features and fixes) can be
 
 I have also made a number of improvements/fixes to the base application:
 
-- Optional product image upload to Cloudinary
-- Improved search functionality also allows searching in the product description, rather than just the name
-- Products are no longer completely deleted, but de-activated/re-activated to preserve order integrity
-- Modal dialogs from react-bootstrap are used instead of vanilla JavaScript alerts
-- Improved pagination with details of total items
-- The user's cart is correctly emptied after placing an order
-- Improved initial data seeding options - admin password is seeded from your .env file
-- Additional details are displayed on the order screen
-- All dates are formatted correctly based on a specified region
+- Optional product image upload to Cloudinary (88290276f903513b4bdf5c89354db3de7b9f3b0b and a5d3e954bb872a9e545143ec7969c963f103dbc8)
+- Improved search functionality also allows searching in the product description, rather than just the name (c53cca8131b96bf1ef8055233df36affa31d5bc8)
+- Products are no longer completely deleted, but de-activated/re-activated to preserve order integrity (006cc80a3d0b6b0d800778814509f4f39fb1eb3f)
+- Modal dialogs from react-bootstrap are used instead of vanilla JavaScript alerts (cd86261a24e6d02dd225f7e16644de14ac7bb2a7 and f8e9cb7eaba586cb24eb3115ce6b7cdaeda92922)
+- Improved pagination with details of total items (4fb1ed02e0001fc81ab68f576adc5f36c573abea)
+- The user's cart is correctly emptied after placing an order (93fad4d725214df611d2605cea7137f9fcdf09e0)
+- Improved initial data seeding options - admin password is seeded from your .env file (ad56da3d8e7ea4e80f9fdd6d4d274aacbdb79ce1)
+- Improved the cost calculations on the order screen (bdea58ec5c1ed86b8b30158a29a166e3a75fa0a7)
+- All dates are formatted correctly based on a specified region (d764ae6ca49ea201509d807f44e21de4bdb8817e)
 
 ## Usage
 
